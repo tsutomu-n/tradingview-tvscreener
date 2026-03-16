@@ -87,6 +87,33 @@ class TestFieldCondition:
         assert cond.operation == FilterOperator.NOT_IN_RANGE
         assert cond.value == ['Finance', 'Utilities']
 
+    def test_field_to_field_greater_than(self):
+        """Test > operator with field-to-field comparison."""
+        cond = StockField.EXPONENTIAL_MOVING_AVERAGE_5 > StockField.EMA25
+        assert isinstance(cond, FieldCondition)
+        assert cond.operation == FilterOperator.ABOVE
+
+    def test_field_to_field_greater_or_equal(self):
+        """Test >= operator with field-to-field comparison."""
+        cond = StockField.EXPONENTIAL_MOVING_AVERAGE_5 >= StockField.EMA25
+        assert isinstance(cond, FieldCondition)
+        assert cond.operation == FilterOperator.ABOVE_OR_EQUAL
+
+    def test_field_to_field_less_than(self):
+        """Test < operator with field-to-field comparison."""
+        cond = StockField.PRICE < StockField.SIMPLE_MOVING_AVERAGE_50
+        assert isinstance(cond, FieldCondition)
+        assert cond.operation == FilterOperator.BELOW
+
+    def test_field_to_field_serialization(self):
+        """Test that field-to-field comparison serializes correctly."""
+        cond = StockField.EXPONENTIAL_MOVING_AVERAGE_5 >= StockField.EMA25
+        filter_ = cond.to_filter()
+        d = filter_.to_dict()
+        assert d['left'] == 'EMA5'
+        assert d['operation'] == 'egreater'
+        assert d['right'] == 'EMA25'
+
     def test_enum_equality_preserved(self):
         """Test that enum-to-enum equality still works."""
         assert StockField.PRICE == StockField.PRICE
@@ -192,6 +219,19 @@ class TestScreenerWhereMethod:
         filter_dict = ss.filters[0].to_dict()
         assert filter_dict['operation'] == 'in_range'
         assert filter_dict['right'] == [1e9, 10e9]
+
+    def test_where_with_field_to_field(self):
+        """Test where() with field-to-field comparison (e.g., Golden Cross)."""
+        ss = StockScreener()
+        ss.where(StockField.EXPONENTIAL_MOVING_AVERAGE_5 >= StockField.EMA25)
+
+        assert len(ss.filters) == 1
+        filter_dict = ss.filters[0].to_dict()
+        assert filter_dict == {
+            'left': 'EMA5',
+            'operation': 'egreater',
+            'right': 'EMA25',
+        }
 
     def test_where_with_interval_field(self):
         """Test where() with FieldWithInterval."""

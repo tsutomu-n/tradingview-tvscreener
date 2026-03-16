@@ -2,6 +2,17 @@
 
 All notable changes to tvscreener.
 
+## [0.2.1] - 2026
+
+### Fixed
+
+- **Field-to-field comparisons** now supported (e.g., `StockField.EMA5 >= StockField.EMA25`)
+  - Removed incorrect TypeError that blocked field-to-field comparisons
+  - The TradingView API does support these comparisons natively
+  - Enables strategies like Golden Cross, EMA stacking, etc.
+
+---
+
 ## [0.2.0] - 2025
 
 ### Added

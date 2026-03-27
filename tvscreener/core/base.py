@@ -231,6 +231,7 @@ class Screener:
 
     def sort_by(self, sort_by: Field, ascending=True):
         self.sort = {"sortBy": sort_by.field_name, "sortOrder": "asc" if ascending else "desc"}
+        return self
 
     def set_index(self, *indices: IndexSymbol) -> 'Screener':
         """

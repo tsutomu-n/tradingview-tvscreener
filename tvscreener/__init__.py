@@ -28,6 +28,7 @@ from .field.presets import (
 from .filter import Filter, FilterOperator, ExtraFilter, FieldCondition
 from .util import *
 from .beauty import beautify
+from .news import get_news, get_article
 
 __all__ = [
     "Screener", "ScreenerDataFrame",
@@ -48,4 +49,6 @@ __all__ = [
     "BOND_BASIC_FIELDS", "BOND_YIELD_FIELDS", "BOND_MATURITY_FIELDS",
     "FUTURES_PRICE_FIELDS", "FUTURES_TECHNICAL_FIELDS",
     "COIN_PRICE_FIELDS", "COIN_MARKET_FIELDS",
+    # News
+    "get_news", "get_article",
 ]
